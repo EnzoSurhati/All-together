@@ -18,11 +18,12 @@ router.post("/", async (req, res, next) => {
     if (!user) {
       return res.status(401).json({ message: "Not Authorized" });
     }
+    console.log('USER', user);
     const matchingUser = await bcrypt.compare(password, user[0].password);
     if (matchingUser) {
       const token = jwt.sign(
-        { email, id: user.id },
-        process.env.JWT_SECRET || "secret"
+        { email, id: user[0].id, firstname: user[0].firstname, lastname: user[0].lastname },
+        process.env.JWT_SECRET || "secret", {expiresIn: "24H"}
       );
       return res.json({ token });
     }
